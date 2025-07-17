@@ -74,7 +74,7 @@ git log
 git log --oneline
 ```
 
-### ✅ 계정 설정 확인
+### ✅ 설정 확인
 
 ```bash
 git config --global -l
