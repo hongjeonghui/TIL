@@ -70,3 +70,118 @@ expr1 = '(A+B)*C'
 expr2 = '(A+B)*(C-D)'
 print(infix_to_postfix(expr1))  # "AB+C*"
 print(infix_to_postfix(expr2))  # "AB+CD-*"
+```
+
+### 2.4 연습문제코드 
+- solution 1
+ ```python
+  
+T = int(input())
+
+
+def infix_to_postfix(expression):
+    # 연산자 우선순위
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
+
+    stack = []
+    result = []
+
+    for token in expression:
+        # 1. 피연산자인 경우: 결과에 추가
+        if token.isalnum():  # (A, B, C, 숫자 등)
+            result.append(token)
+
+        # 2. '('는 스택에 push
+        elif token == '(':
+            stack.append(token)
+
+        # 3. ')'는 '(' 만날 때까지 pop하여 결과에 추가
+        elif token == ')':
+            while stack and stack[-1] != '(':
+                result.append(stack.pop())
+            stack.pop()  # '('는 결과에 추가하지 않고 버림
+
+        # 4. 연산자(+, -, *, /, ^ 등)
+        else:
+            # 스택 top의 연산자와 우선순위 비교 후,
+            # 스택 top이 현재 연산자보다 우선순위가 높거나 같으면 pop
+            while (
+                stack
+                and stack[-1] != '('
+                and precedence.get(stack[-1], 0) >= precedence.get(token, 0)
+            ):
+                result.append(stack.pop())
+            stack.append(token)
+
+    # 처리 후, 스택에 남아 있는 연산자를 결과에 추가
+    while stack:
+        result.append(stack.pop())
+
+    return ''.join(result)
+
+
+for tc in range(1, T + 1):
+    expression = input()
+    print(f'#{tc} {infix_to_postfix(expression)}')
+```
+- solution 2
+```python
+
+T = int(input())
+
+
+def precedence(op):
+    """
+    연산자 우선순위를 반환하는 간단한 함수.
+    '*'와 '/'는 2, '+'와 '-'는 1, 그 외는 0
+    """
+    if op == '*' or op == '/':
+        return 2
+    elif op == '+' or op == '-':
+        return 1
+    else:
+        return 0
+
+
+for tc in range(1, T + 1):
+    cal = input()
+    stack = []
+    result = ''
+
+    for char in cal:
+        # 피연산자(숫자, 알파벳)는 결과에 바로 추가
+        if char.isdecimal() or char.isalpha():
+            result += char
+
+        # '('는 스택에 push
+        elif char == '(':
+            stack.append(char)
+
+        # ')'면 '('를 만날 때까지 pop
+        elif char == ')':
+            while stack and stack[-1] != '(':
+                result += stack.pop()
+            stack.pop()  # '(' 제거(결과엔 추가 X)
+
+        # 그 외 연산자(+, -, *, /)
+        else:
+            # 스택 top의 연산자와 우선순위 비교
+            # stack[-1] != '(' 조건을 빼먹으면 '('도 pop될 수 있음
+            while (
+                stack
+                and stack[-1] != '('
+                and precedence(stack[-1]) >= precedence(char)
+            ):
+                result += stack.pop()
+            stack.append(char)
+
+    # 스택에 남은 연산자를 결과에 추가
+    while stack:
+        result += stack.pop()
+
+    print(f'# {tc} {result}')
+```
+
+
+
+
