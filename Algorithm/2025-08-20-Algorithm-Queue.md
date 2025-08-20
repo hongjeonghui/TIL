@@ -47,38 +47,54 @@ print(queue.pop(0))  # dequeue -> 3
 ```python
 class Queue:
     def __init__(self, capacity=10):
-        self.capacity = capacity
-        self.items = [None] * capacity
-        self.front = -1
-        self.rear = -1
+        self.capacity = capacity  # 큐의 최대 용량 설정
+        self.items = [None] * capacity  # 큐를 저장할 리스트 초기화
+        self.front = -1  # 큐의 맨 앞 요소 인덱스 (초기값 -1)
+        self.rear = -1  # 큐의 맨 뒤 요소 인덱스 (초기값 -1)
 
     def is_empty(self):
+        # front와 rear가 같으면 큐가 비어있음
         return self.front == self.rear
 
     def is_full(self):
+        # rear가 큐의 최대 인덱스(capacity - 1)에 도달하면 큐가 가득 참
         return self.rear == self.capacity - 1
 
     def enqueue(self, item):
         if self.is_full():
-            raise IndexError("Queue is full")
-        self.rear += 1
-        self.items[self.rear] = item
+            raise IndexError("Queue is full")  # 큐가 가득 찼을 때 예외 발생
+        self.rear += 1  # rear 인덱스를 1 증가
+        self.items[self.rear] = item  # 새 항목을 rear 위치에 추가
 
     def dequeue(self):
         if self.is_empty():
-            raise IndexError("Queue is empty")
-        self.front += 1
-        item = self.items[self.front]
-        self.items[self.front] = None
-        return item
+            raise IndexError("Queue is empty")  # 큐가 비어있을 때 예외 발생
+        self.front += 1  # front 인덱스를 1 증가
+        item = self.items[self.front]  # front 위치의 항목을 가져옴
+        self.items[self.front] = None  # 해당 위치를 None으로 설정 
+        
+        return item  # 가져온 항목 반환
 
     def peek(self):
         if self.is_empty():
-            raise IndexError("Queue is empty")
-        return self.items[self.front + 1]
+            raise IndexError("Queue is empty")  # 큐가 비어있을 때 예외 발생
+        return self.items[self.front + 1]  # front 다음 위치의 항목 반환
 
     def get_size(self):
+        # 현재 큐에 있는 항목의 개수 계산
         return self.rear - self.front
+
+
+# 사용 예시
+queue = Queue(5)  # 용량이 5인 큐 생성
+
+queue.enqueue(1)  # 큐에 1 추가
+queue.enqueue(2)  # 큐에 2 추가
+queue.enqueue(3)  # 큐에 3 추가
+
+print("Dequeued:", queue.dequeue())  # 큐에서 첫 번째 항목 제거 및 출력 (1)
+print("Dequeued:", queue.dequeue())  # 큐에서 두 번째 항목 제거 및 출력 (2)
+
 ```
 
 ---
@@ -102,38 +118,60 @@ class Queue:
 ```python
 class CircularQueue:
     def __init__(self, capacity=10):
+        # 실제 용량은 요청된 용량보다 1 크게 설정 (한 칸은 항상 비워둠)
         self.capacity = capacity + 1
-        self.items = [None] * self.capacity
-        self.front = 0
-        self.rear = 0
+        self.items = [None] * self.capacity  # 리스트 초기화
+        self.front = 0  # 큐의 맨 앞 요소 바로 앞의 인덱스
+        self.rear = 0  # 큐의 맨 뒤 요소의 인덱스
 
     def is_empty(self):
+        # front와 rear가 같으면 큐가 비어있음
         return self.front == self.rear
 
     def is_full(self):
+        # rear 다음 위치가 front와 같으면 큐가 가득 참
         return (self.rear + 1) % self.capacity == self.front
 
     def enqueue(self, item):
         if self.is_full():
-            raise IndexError("Queue is full")
+            raise IndexError("Queue is full")  # 큐가 가득 찼을 때 예외 발생
+        # rear를 다음 위치로 이동 (원형으로 순환)
         self.rear = (self.rear + 1) % self.capacity
-        self.items[self.rear] = item
+        self.items[self.rear] = item  # 새 위치에 항목 삽입
 
     def dequeue(self):
         if self.is_empty():
             raise IndexError("Queue is empty")
+        # front를 다음 위치로 이동 (원형으로 순환)
         self.front = (self.front + 1) % self.capacity
-        item = self.items[self.front]
-        self.items[self.front] = None
+        item = self.items[self.front]  # front 위치의 항목을 가져옴
+        self.items[self.front] = None  # 해당 위치의 데이터 제거
         return item
 
     def peek(self):
         if self.is_empty():
             raise IndexError("Queue is empty")
+        # front 다음 위치의 항목 반환 (제거하지 않음)
         return self.items[(self.front + 1) % self.capacity]
 
     def get_size(self):
+        # 현재 큐에 있는 항목의 개수 계산
+        # rear가 front보다 앞에 있으면 capacity를 더해 음수가 되지 않게 함
         return (self.rear - self.front + self.capacity) % self.capacity
+
+
+# 사용 예시
+queue = CircularQueue(5)
+
+queue.enqueue(1)
+queue.enqueue(2)
+queue.enqueue(3)
+queue.enqueue(4)
+queue.enqueue(5)
+queue.enqueue(6)  # IndexError: 큐가 가득 찼습니다.
+print(queue.items)  # [None, 1, 2, 3, 4, 5]
+print(queue.get_size()) # 5
+
 ```
 
 ---
@@ -145,24 +183,51 @@ class CircularQueue:
 - 예: 키보드 입력 → 큐에 저장 → OS가 순서대로 처리
 
 ### 5.2 연습문제: 마이쮸 시뮬레이션
+#### 문제
 ```python
-total_candy = 20
-queue = [(1, 1)]
-last_person = None
+total_candy = 20  # 총 마이쮸 개수
+queue = []  # 사람들을 저장할 큐
+queue.append((1, 1))  # 첫 번째 사람과 받을 마이쮸 개수를 큐에 추가
+
+last_person = None  # 마지막으로 마이쮸를 받은 사람을 저장할 변수
+
+pass
+
+
+# 마지막으로 마이쮸를 받은 사람을 출력
+print(f"마지막 마이쮸는 {last_person}번")
+```
+#### 코드
+```python
+total_candy = 20  # 총 마이쮸 개수
+queue = []  # 사람들을 저장할 큐
+queue.append((1, 1))  # 첫 번째 사람과 받을 마이쮸 개수를 큐에 추가
+
+last_person = None  # 마지막으로 마이쮸를 받은 사람을 저장할 변수
 next_person = 2
 
+# 마이쮸가 남아있는동안 반복
 while total_candy > 0:
+    # 대기열 맨 앞 사람이 마이쮸를 수령할 예정
     person, count = queue.pop(0)
 
+    # 남은 마이쮸가 현재 사람이 받을 마이쮸 개수보다 적거나 같은 경우
     if total_candy - count <= 0:
         last_person = person
         break
 
-    total_candy -= count
+    # 현재 사람이 받은 마이쮸 개수를 총 마이쮸 개수에서 제거
+    total_candy = total_candy - count
+    
+    # 직전에 마이쮸를 받은 사람이 바로 다시 줄을 섬
     queue.append((person, count + 1))
+
+    # 이 모습을 본 다음 사람이 대기열에 이어서 줄을 섬 (처음이니까 받을 마이쮸는 1개)
     queue.append((next_person, 1))
     next_person += 1
 
+
+# 마지막으로 마이쮸를 받은 사람을 출력
 print(f"마지막 마이쮸는 {last_person}번")
 ```
 
