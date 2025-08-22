@@ -101,6 +101,86 @@ def postorder_traverse(T):  # 후위 순회
 -   중위: D B E A C F
 -   후위: D E B F C A
 
+
+### 5.3 연습문제
+#### 문제 
+- 첫 줄에는 트리의 정점의 총 수 V, 그 다음 줄에는 V-1개 간선 정보가 나열됩니다.
+- 간선은 그것을 이루는 두 정점으로 표기됩니다.
+- 간선은 항상 "부모 자식" 순서로 표기되며, 아래 예에서 두 번째 줄 처음 1과 2는 정점 1과 2를 잇는 간선으로 1이 부모, 2가 자식을 의미합니다.
+##### input
+```python
+13
+1 2 1 3 2 4 3 5 3 6 4 7 5 8 5 9 6 10 6 11 7 12 11 13
+```
+
+#### 코드
+```python
+# 전위 순회
+def preorder(node):
+    if node != 0:
+        # 나를 출력
+        print(node, end=' ')
+        # 왼쪽 자식을 조사
+        preorder(left[node])
+        # 오른쪽 자식을 조사
+        preorder(right[node])
+
+
+# 중위 순회
+def inorder(node):
+    if node != 0:
+        # 왼쪽 자식을 조사
+        inorder(left[node])
+        print(node, end=' ')
+        # 오른쪽 자식을 조사
+        inorder(right[node])
+
+# 후위 순회
+def postorder(node):
+    if node != 0:
+        # 왼쪽 자식을 조사
+        postorder(left[node])
+        # 오른쪽 자식을 조사
+        postorder(right[node])
+        print(node, end=' ')
+
+
+V = int(input())  # 정점 개수
+E = V -1  # 간선 개수
+arr = list(map(int, input().split()))
+
+# 인덱스를 활용할 것이기 때문에 노드의 개수 +1
+# 0번 노드는 없음
+parent = [0] * (V+1)  # 부모의 정보
+left = [0] * (V+1)  # 왼쪽 자식 정보
+right = [0] * (V+1)  # 오른쪽 자식 정보
+
+for i in range(E):
+    p, c = arr[i*2], arr[i*2+1]
+    # print(p, c)
+    if left[p] == 0:  # 아직 왼쪽 자식이 없으면
+        left[p] = c  # p번의 외쪽 자식 c
+    else:
+        right[p] = c
+    parent[c] = p
+
+root = 0
+for i in range(1, V+1):  # 모든 노드 순회
+    # 부모정보를 담았는데, 부모가 없으면 루트
+    if parent[i] == 0:
+        root = i
+        break
+
+# 조사를 시작 root 노드부터
+print('---전위 순회---')
+preorder(root)
+print()
+print('---중위 순회---')
+inorder(root)
+print()
+print('---후위 순회---')
+postorder(root)
+```
 ------------------------------------------------------------------------
 
 ## 6. 이진 트리 표현 방법
