@@ -82,6 +82,53 @@ def check_babygin(numbers):
     return result >= 2
 ```
 
+
+### 순열 활용
+``` python
+import sys
+from itertools import permutations
+
+sys.stdin = open('input.txt')
+
+
+def is_run(cards):
+    """세 장의 카드가 run인지 확인합니다."""
+    # run을 확인하려면 정렬이 필수입니다.
+    # [1, 2, 3] 형태인지 확인합니다.
+    return cards[0] + 1 == cards[1] and cards[1] + 1 == cards[2]
+
+
+def is_triplet(cards):
+    """세 장의 카드가 triplet인지 확인합니다."""
+    # 세 장의 카드가 모두 같은지 확인합니다.
+    return cards[0] == cards[1] == cards[2]
+
+
+T = int(input())
+for tc in range(1, T + 1):
+    cards = list(map(int, input()))
+    is_babygin = False
+
+    # 1. 6개 숫자의 모든 순열을 생성합니다.
+    #    중복된 카드가 있을 수 있으므로, set으로 중복된 순열 결과를 제거합니다.
+    for p in set(permutations(cards)):
+        # 2. 앞 3장과 뒤 3장으로 나눕니다.
+        # run 검사를 위해 각 그룹을 정렬합니다.
+        group1 = sorted(list(p[:3]))
+        group2 = sorted(list(p[3:]))
+
+        # 3. 각 그룹이 run 또는 triplet인지 확인합니다.
+        check1 = is_run(group1) or is_triplet(group1)
+        check2 = is_run(group2) or is_triplet(group2)
+
+        # 4. 두 그룹 모두 조건을 만족하면 baby-gin입니다.
+        if check1 and check2:
+            is_babygin = True
+            break  # 하나라도 찾으면 더 이상 탐색할 필요가 없습니다.
+
+    print(f'#{tc} {is_babygin}')
+```
+
 ------------------------------------------------------------------------
 
 ## 5. 완전 탐색 구현 방법
