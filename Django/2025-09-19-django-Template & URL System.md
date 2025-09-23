@@ -3,7 +3,7 @@
 ---
 
 ## 🎨 Django Template System
-
+ 
 ### 개념
 - **Django Template System**
   - 파이썬 데이터(`context`)를 HTML 문서(`template`)와 결합해 **동적인 웹페이지 생성**
