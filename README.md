@@ -10,7 +10,7 @@
 - Git / GitHub
 - Python
 - JavaScript
-
+- Django
 ---
 
 ## 📝 규칙
