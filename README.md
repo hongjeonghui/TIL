@@ -11,6 +11,7 @@
 - Python
 - JavaScript
 - Django
+- AI
 ---
 
 ## 📝 규칙
